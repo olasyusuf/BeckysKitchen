@@ -1,18 +1,18 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
+from enums import UserRole, OrderStatus
+
 db = SQLAlchemy()
 
 class User(db.Model):
-    Role = db.Enum('customer', 'admin', name='user_roles')
-    
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=True)
-    role = db.Column(db.String(20), nullable=False, default=Role.customer)
+    role = db.Column(db.String(20), nullable=False, default=UserRole.CUSTOMER.value)
     orders = db.relationship('Order', backref='customer', lazy=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -27,12 +27,11 @@ class Meal(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Order(db.Model):
-    OrderStatus = db.Enum('Pending', 'Completed', 'Cancelled', name='order_statuses')
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(50), default=OrderStatus.Pending)
+    status = db.Column(db.String(50), default=OrderStatus.PENDING.value)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     items = db.relationship(
         'OrderItem', backref='order', lazy=True, cascade='all, delete-orphan'
