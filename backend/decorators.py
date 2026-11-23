@@ -13,13 +13,13 @@ def role_required(*allowed_roles):
                 if is_api_request():
                     return jsonify({'error': 'Authentication required'}), 401
                 flash('Please log in to continue.', 'error')
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('login'))
             
             if session.get('role') not in allowed_roles:
                 if is_api_request():
                     return jsonify({'error': 'Insufficient permissions'}), 403
                 flash('Access denied for your account role.', 'error')
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('login'))
             
             return f(*args, **kwargs)
         return decorated_function
