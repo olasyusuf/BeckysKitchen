@@ -91,5 +91,22 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/catalog')
+@role_required('Customer', 'Admin')
+def catalog():
+
+    return render_template(
+        'customer/catalog.html'
+    )
+
+
+@app.route('/menu')
+@role_required('Admin')
+def menu():
+
+    return render_template(
+        'admin/menu.html'
+    )
+
 if __name__ == '__main__':
     app.run(port=5000)
