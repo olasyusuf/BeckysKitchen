@@ -89,4 +89,33 @@
   </main>
 </div>
 
+<!-- Add New Meal Modal -->
+<div id="add-meal-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-title">Add New Meal</h2>
+      <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+    </div>
+
+    <form action="" method="POST" enctype="multipart/form-data">
+      <label for="meal-name">Meal Name</label>
+      <input type="text" id="meal-name" name="name" placeholder="e.g., Jollof Rice & Grilled Chicken" required />
+
+      <label for="meal-price">Price (₦)</label>
+      <input type="number" id="meal-price" name="price" step="0.01" min="0" placeholder="2500" required />
+
+      <label for="meal-desc">Description</label>
+      <textarea id="meal-desc" name="description" rows="3" placeholder="Short description of the meal..."></textarea>
+
+      <label for="meal-image">Meal Image</label>
+      <input type="file" id="meal-image" name="image" accept="image/*" />
+
+      <div class="modal-footer">
+        <a href="#" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">Save Meal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 {% endblock %}
