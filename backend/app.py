@@ -2,8 +2,9 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
+from models import Meal, Order, Review, User, db
 from config import config_by_name
-from models import User, db
+from decorators import role_required
 
 migrate = Migrate()
 
@@ -23,10 +24,32 @@ app = create_app(os.environ.get('.env', 'dev'))
 @app.route('/')
 def index():
     if 'user_id' in session:
-        if session.get('role') == 'admin':
-            return redirect(url_for('admin.menu'))
-        return redirect(url_for('customer.catalog'))
+        if session.get('role') == 'ADMIN':
+            return redirect(url_for('menu'))
+        return redirect(url_for('catalog'))
     return redirect(url_for('login'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+
+        user = User.query.filter_by(username=username).first()
+        if user:
+            if check_password_hash(user.password_hash, password):
+                session['user_id'] = user.id
+                session['username'] = user.username
+                session['role'] = user.role
+                print(user.role)
+
+                if user.role == 'ADMIN':
+                    return redirect(url_for('menu'))
+
+                return redirect(url_for('catalog'))
+            flash('Invalid username or password.', 'error')
+    return render_template('/login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -34,10 +57,10 @@ def register():
     if request.method == 'POST':
         try:
             username = request.form.get('username')
-            password = request.form.get('password') or ''
+            password = request.form.get('password', '')
             email = request.form.get('email')
             name = request.form.get('name')
-            role = request.form.get('role', 'customer')
+            role = request.form.get('role', 'Customer')
 
             if User.query.filter_by(username=username).first():
                 flash('Username already exists.', 'error')

@@ -1,8 +1,8 @@
 import enum
 
 class UserRole(enum.Enum):
-    ADMIN = "admin"
-    CUSTOMER = "customer"
+    ADMIN = "Admin"
+    CUSTOMER = "Customer"
 
     
 class OrderStatus(enum.Enum):
