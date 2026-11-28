@@ -100,9 +100,37 @@ def catalog():
     )
 
 
-@app.route('/menu')
+@app.route('/menu', methods=['GET', 'POST'])
 @role_required('Admin')
 def menu():
+    if request.method == "POST":
+        try:
+            name = request.form.get('name')
+            price = request.form.get('price')
+            category = request.form.get('category')
+            description = request.form.get('description', '')
+            # img_url = request.form.get('image', '')
+            
+            if Meal.query.filter_by(name=name).first():
+                flash('Meal already exists.', 'error')
+                return redirect(url_for('menu'))
+            
+            new_meal = Meal()
+            new_meal.name = name
+            new_meal.price = price
+            new_meal.category = category
+            new_meal.description = description
+
+            db.session.add(new_meal)
+            db.session.commit()
+            flash('Meal added successfully.', 'success')
+            return redirect(url_for('menu'))   
+          
+        except Exception as e:
+            print(f"Error adding meal: {e}")
+            db.session.rollback()
+            flash('Cannot add new meal.', 'error')
+        
     return render_template(
         'admin/menu.html'
     )
