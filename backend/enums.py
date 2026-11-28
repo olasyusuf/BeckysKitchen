@@ -9,3 +9,9 @@ class OrderStatus(enum.Enum):
     PENDING = "Pending"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
+    
+class MenuCategory(enum.Enum):
+    MAINDISH = "MainDish"
+    SWALLOW = "Swallow"
+    SNACKS = "Snacks"
+    DRINKS = "Drinks"

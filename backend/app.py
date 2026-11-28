@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import Meal, Order, Review, User, db
+from models import User, Meal, Order, Review, db
 from config import config_by_name
 from decorators import role_required
 
@@ -44,7 +44,7 @@ def login():
                 session['role'] = user.role
                 print(user.role)
 
-                if user.role == 'ADMIN':
+                if user.role == 'Admin':
                     return redirect(url_for('menu'))
 
                 return redirect(url_for('catalog'))
@@ -103,7 +103,6 @@ def catalog():
 @app.route('/menu')
 @role_required('Admin')
 def menu():
-
     return render_template(
         'admin/menu.html'
     )

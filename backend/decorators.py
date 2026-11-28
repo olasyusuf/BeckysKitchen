@@ -9,9 +9,6 @@ def role_required(*allowed_roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            print(f"Allowed roles: {allowed_roles}")  # Debugging line to check allowed roles
-            print(f"Session data: {session}")  # Debugging line to check session contents
-
             if 'user_id' not in session:
                 if is_api_request():
                     return jsonify({'error': 'Authentication required'}), 401
