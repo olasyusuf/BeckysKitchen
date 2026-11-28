@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
-from enums import UserRole, OrderStatus
+from enums import UserRole, OrderStatus, MenuCategory
 
 db = SQLAlchemy()
 
@@ -12,7 +12,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=True)
-    role = db.Column(db.String(20), nullable=False, default=UserRole.CUSTOMER.value)
+    role = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.CUSTOMER.value)
     orders = db.relationship('Order', backref='customer', lazy=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -20,7 +20,7 @@ class Meal(db.Model):
     __tablename__ = 'meals'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    category = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.Enum(MenuCategory), nullable=False)
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=False)
     available = db.Column(db.Boolean, default=True)
@@ -32,7 +32,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(50), default=OrderStatus.PENDING.value)
+    status = db.Column(db.Enum(OrderStatus), default=OrderStatus.PENDING.value)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     items = db.relationship(
         'OrderItem', backref='order', lazy=True, cascade='all, delete-orphan'

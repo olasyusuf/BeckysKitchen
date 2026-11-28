@@ -114,7 +114,7 @@ def menu():
             if Meal.query.filter_by(name=name).first():
                 flash('Meal already exists.', 'error')
                 return redirect(url_for('menu'))
-            
+        
             new_meal = Meal()
             new_meal.name = name
             new_meal.price = price
